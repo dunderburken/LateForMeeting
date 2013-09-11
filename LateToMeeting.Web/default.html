@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Late to meeting.</title>
+    <script src="Scripts/jquery-2.0.3.js"></script>
+    <script src="Scripts/knockout-2.3.0.js"></script>
+    <script src="Scripts/moment.js"></script>
+    <link href="Content/style.min.css" rel="stylesheet" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=device-width, user-scalable=false;" />
+</head>
+<body>
+    <div id="container">
+        Meeting start: <input type="time" data-bind="value: meetingStartInput" /><br/>
+        Hourly Rate: <input type="number" placeholder="Kostar" data-bind="value: hourlyRate" /><span data-bind="    text: costPerMinute"></span> kr per minut<br />
+        Participants: <input type="number" placeholder="Antal" data-bind="value: participantsCount" /><span data-bind="    text: costPerMinuteTotal"></span> kr per minut<br />
+        <div data-bind="visible:timeDiffSeconds()>0">
+            Meeting started <span data-bind="    text: totalMinutesHumanized"></span><br/>
+            Total Waste: <span data-bind="text: totalWaste"></span> kr<br/>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    var ViewModel = function () {
+        var self = this;
+        
+        this.participantsCount = ko.observable(6);
+        this.hourlyRate = ko.observable(900);
+        this.clock = ko.observable(new Date());
+        this.meetingStartInput = ko.observable(new moment().format('HH:mm'));
+        
+        this.todayDateIso = new moment(self.clock()).format('YYYY-MM-DD');
+
+        this.meetingStart = ko.computed(function () {
+            var dateString = self.todayDateIso + 'T' + self.meetingStartInput();
+            return new moment(dateString);
+        }, this);
+
+        this.timeDiffMinutes = ko.computed(function () {
+            var now = new moment(this.clock());
+            var start = new moment(this.meetingStart());
+            return moment.duration(start - now, 'minutes');
+        }, this);
+        
+        this.timeDiffSeconds = ko.computed(function () {
+            var now = new moment(this.clock());
+            var start = new moment(this.meetingStart());
+            return now.diff(start, 'seconds');
+        }, this);
+        
+        this.totalMinutesHumanized = ko.computed(function () {
+            var now = new moment(this.clock());
+            var start = new moment(this.meetingStart());
+            return moment.duration(start - now).humanize(true);
+        }, this);
+        
+        this.costPerMinute = ko.computed(function () {
+            return ((this.hourlyRate()) / 60).toFixed(2);
+        }, this);
+
+        this.costPerMinuteTotal = ko.computed(function () {
+            return ((this.hourlyRate() / 60) * this.participantsCount()).toFixed(2);
+        }, this);
+
+        this.totalWaste = ko.computed(function () {
+            return ((this.hourlyRate() / 3600) * this.participantsCount() * this.timeDiffSeconds()).toFixed(0);
+        }, this);
+
+        this.tick = function () {
+            self.clock(new Date());
+        };
+
+        setInterval(self.tick, 1000);
+    };
+    var viewModel = new ViewModel();
+    ko.applyBindings(viewModel);
+</script>
