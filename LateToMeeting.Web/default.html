@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Late to meeting.</title>
+    <title>Late for meeting.</title>
     <script src="Scripts/jquery-2.0.3.js"></script>
     <script src="Scripts/knockout-2.3.0.js"></script>
     <script src="Scripts/moment.js"></script>
@@ -11,12 +11,26 @@
 </head>
 <body>
     <div id="container">
-        Meeting start: <input type="time" data-bind="value: meetingStartInput" /><br/>
-        Hourly Rate: <input type="number" placeholder="Kostar" data-bind="value: hourlyRate" /><span data-bind="    text: costPerMinute"></span> kr per minut<br />
-        Participants: <input type="number" placeholder="Antal" data-bind="value: participantsCount" /><span data-bind="    text: costPerMinuteTotal"></span> kr per minut<br />
-        <div data-bind="visible:timeDiffSeconds()>0">
+        <div class="one">
+            Meeting start:<br />
+            <input type="time" data-bind="value: meetingStartInput" />
+        </div>
+        <div class="two">
+            Hourly Rate:<br />
+            <input type="number" placeholder="Kostar" data-bind="value: hourlyRate" /><br />
+            <span data-bind="    text: costPerMinute"></span> kr per minut
+        </div>
+        <div class="three">
+            Waiting:<br />
+            <input type="number" placeholder="Antal" data-bind="value: participantsCount" /><br />
+            <span data-bind="    text: costPerMinuteTotal"></span> kr per minut<br />
+        </div>
+        <div class="result" data-bind="visible:timeDiffSeconds()>0">
             Meeting started <span data-bind="    text: totalMinutesHumanized"></span><br/>
-            Total Waste: <span data-bind="text: totalWaste"></span> kr<br/>
+            <div id="waste">Total Waste: <span data-bind="text: totalWaste"></span> kr</div>
+        </div>
+        <div class="result" data-bind="visible: timeDiffSeconds() < 0">
+            The meeting starts <span data-bind="    text: totalMinutesHumanized"></span><br/>
         </div>
     </div>
 </body>
