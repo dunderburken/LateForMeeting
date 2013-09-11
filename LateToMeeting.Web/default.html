@@ -16,21 +16,23 @@
             <input type="time" data-bind="value: meetingStartInput" />
         </div>
         <div class="two">
-            Hourly Rate:<br />
+            Hourly billing:<br />
             <input type="number" placeholder="Kostar" data-bind="value: hourlyRate" /><br />
-            <span data-bind="    text: costPerMinute"></span> kr per minut
+            <!--<span data-bind="    text: costPerMinute"></span>kr per minut-->
         </div>
         <div class="three">
             Waiting:<br />
             <input type="number" placeholder="Antal" data-bind="value: participantsCount" /><br />
-            <span data-bind="    text: costPerMinuteTotal"></span> kr per minut<br />
+            <!--<span data-bind="    text: costPerMinuteTotal"></span>kr per minut<br />-->
         </div>
-        <div class="result" data-bind="visible:timeDiffSeconds()>0">
-            Meeting started <span data-bind="    text: totalMinutesHumanized"></span><br/>
-            <div id="waste">Total Waste: <span data-bind="text: totalWaste"></span> kr</div>
+        <div class="result" data-bind="visible: timeDiffSeconds() > 0">
+            Meeting started <span data-bind="    text: totalMinutesHumanized"></span>
+            <br />
+            <div id="waste">Wasted Money: <span data-bind="text: totalWaste"></span>kr</div>
         </div>
         <div class="result" data-bind="visible: timeDiffSeconds() < 0">
-            The meeting starts <span data-bind="    text: totalMinutesHumanized"></span><br/>
+            The meeting starts <span data-bind="    text: totalMinutesHumanized"></span>
+            <br />
         </div>
     </div>
 </body>
@@ -39,12 +41,12 @@
 <script>
     var ViewModel = function () {
         var self = this;
-        
+
         this.participantsCount = ko.observable(6);
         this.hourlyRate = ko.observable(900);
         this.clock = ko.observable(new Date());
         this.meetingStartInput = ko.observable(new moment().format('HH:mm'));
-        
+
         this.todayDateIso = new moment(self.clock()).format('YYYY-MM-DD');
 
         this.meetingStart = ko.computed(function () {
@@ -57,19 +59,19 @@
             var start = new moment(this.meetingStart());
             return moment.duration(start - now, 'minutes');
         }, this);
-        
+
         this.timeDiffSeconds = ko.computed(function () {
             var now = new moment(this.clock());
             var start = new moment(this.meetingStart());
             return now.diff(start, 'seconds');
         }, this);
-        
+
         this.totalMinutesHumanized = ko.computed(function () {
             var now = new moment(this.clock());
             var start = new moment(this.meetingStart());
             return moment.duration(start - now).humanize(true);
         }, this);
-        
+
         this.costPerMinute = ko.computed(function () {
             return ((this.hourlyRate()) / 60).toFixed(2);
         }, this);
