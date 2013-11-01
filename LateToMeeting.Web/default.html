@@ -18,12 +18,10 @@
         <div class="two">
             Hourly billing:<br />
             <input type="number" placeholder="Kostar" data-bind="value: hourlyRate" /><br />
-            <!--<span data-bind="    text: costPerMinute"></span>kr per minut-->
         </div>
         <div class="three">
             Waiting:<br />
             <input type="number" placeholder="Antal" data-bind="value: participantsCount" /><br />
-            <!--<span data-bind="    text: costPerMinuteTotal"></span>kr per minut<br />-->
         </div>
         <div class="result" data-bind="visible: timeDiffSeconds() > 0">
             Meeting started <span data-bind="    text: totalMinutesHumanized"></span>
